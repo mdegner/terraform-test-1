@@ -79,6 +79,14 @@ resource "aws_ecs_cluster" "km_ecs_cluster" {
 }
 
 resource "aws_ecs_task_definition" "km_ecs_task" {
+  # oak9: ContainerDefinitions.PortMappings.Protocol is not configured
+  # oak9: ContainerDefinitions.PortMappings.Protocol should be set to any of tcp
+  # oak9: ContainerDefinitions.Privileged is not configured
+  # oak9: ContainerDefinitions.Privileged should be set to any of False
+  # oak9: ContainerDefinitions.ReadonlyRootFilesystem is not configured
+  # oak9: ContainerDefinitions.ReadonlyRootFilesystem should be set to any of False
+  # oak9: Volumes.EFSVolumeConfiguration.TransitEncryption is not configured
+  # oak9: Volumes.EFSVolumeConfiguration.TransitEncryption should be set to any of ENABLED
   family                   = "km_ecs_task_${var.environment}"
   container_definitions    = data.template_file.km_ecs_template.rendered
   network_mode             = "awsvpc"
@@ -122,6 +130,15 @@ resource "aws_cloudwatch_log_group" "km_log_group" {
 }
 
 resource "aws_instance" "km_vm"{
+  # oak9: aws_instance.ebs_block_device.encrypted is not configured
+  # oak9: aws_instance.ebs_block_device.encrypted should be set to any of TRUE
+  # oak9: aws_instance.key_name is not configured
+  # oak9: NetworkInterfaces.AssociatePublicIpAddress is not configured
+  # oak9: NetworkInterfaces.AssociatePublicIpAddress should be set to any of FALSE
+  # oak9: NetworkInterfaces.GroupSet is not configured
+  # oak9: SecurityGroupIds is not configured
+  # oak9: aws_ec2_client_vpn_network_association.security_groups is not configured
+  source_dest_check = false
   ami = data.aws_ami.ubuntu_ami.id
   instance_type = "t2.micro"
   vpc_security_group_ids = [ var.elb_sg ]

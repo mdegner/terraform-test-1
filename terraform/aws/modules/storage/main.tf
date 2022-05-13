@@ -33,6 +33,8 @@ resource "aws_security_group" "km_rds_sg" {
 }
 
 resource "aws_kms_key" "km_db_kms_key" {
+  key_usage = "ENCRYPT_DECRYPT"
+  # oak9: aws_kms_key.policy is not configured
   description             = "KMS Key for DB instance ${var.environment}"
   deletion_window_in_days = 10
   enable_key_rotation     = true
@@ -43,6 +45,14 @@ resource "aws_kms_key" "km_db_kms_key" {
 }
 
 resource "aws_db_instance" "km_db" {
+  # oak9: AssociatedRoles.RoleArn is not configured
+  # oak9: aws_rds_cluster_instance.monitoring_role_arn is not configured
+  # oak9: CACertificateIdentifier is not configured
+  # oak9: EnableIAMDatabaseAuthentication is not configured
+  # oak9: MasterUserPassword is not configured
+  # oak9: aws_rds_cluster.master_username is not configured
+  # oak9: DBSecurityGroups is not configured
+  # oak9: VPCSecurityGroups is not configured
   name                      = "km_db_${var.environment}"
   allocated_storage         = 20
   engine                    = "postgres"
@@ -102,6 +112,11 @@ resource "aws_ssm_parameter" "km_ssm_db_name" {
 }
 
 resource "aws_s3_bucket" "km_blob_storage" {
+  # oak9: aws_s3_bucket_public_access_block is not configured
+  # oak9: BucketEncryption is not configured
+  # oak9: aws_s3_bucket.server_side_encryption_configuration is not configured
+  # oak9: aws_s3_bucket.cors_rule.allowed_methods is not configured
+  # oak9: aws_s3_bucket.cors_rule.allowed_methods should be set to any of GET,HEAD,POST
   bucket = "km-blob-storage-${var.environment}"
   acl    = "private"
   tags = merge(var.default_tags, {
@@ -110,12 +125,19 @@ resource "aws_s3_bucket" "km_blob_storage" {
 }
 
 resource "aws_s3_bucket" "km_public_blob" {
+  # oak9: aws_s3_bucket_acl.acl is not configured
+  # oak9: aws_s3_bucket_public_access_block.ignore_public_acls is not configured
+  # oak9: aws_s3_bucket_public_access_block.restrict_public_buckets is not configured
+  # oak9: BucketEncryption is not configured
+  # oak9: aws_s3_bucket.server_side_encryption_configuration is not configured
+  # oak9: aws_s3_bucket.cors_rule.allowed_methods is not configured
+  # oak9: aws_s3_bucket.cors_rule.allowed_methods should be set to any of GET,HEAD,POST
   bucket = "km-public-blob"
 }
 
 resource "aws_s3_bucket_public_access_block" "km_public_blob" {
   bucket = aws_s3_bucket.km_public_blob.id
 
-  block_public_acls   = false
-  block_public_policy = false
+  block_public_acls   = true
+  block_public_policy = true
 }

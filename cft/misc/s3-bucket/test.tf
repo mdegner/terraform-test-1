@@ -1,4 +1,9 @@
 resource "aws_s3_bucket" "mybucket" {
+  # oak9: aws_s3_bucket_public_access_block is not configured
+  # oak9: BucketEncryption is not configured
+  # oak9: aws_s3_bucket.server_side_encryption_configuration is not configured
+  # oak9: aws_s3_bucket.cors_rule.allowed_methods is not configured
+  # oak9: aws_s3_bucket.cors_rule.allowed_methods should be set to any of GET,HEAD,POST
   bucket = "mybucket"
   acl = "public"
 
@@ -18,6 +23,7 @@ resource "aws_s3_bucket_public_access_block" "example" {
 }
 
 resource "aws_s3_bucket_policy" "b" {
+  # oak9: PolicyDocument.Statement is not configured
   bucket = aws_s3_bucket.b.id
 
   policy = jsonencode({
