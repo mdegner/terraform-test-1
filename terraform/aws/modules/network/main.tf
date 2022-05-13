@@ -154,15 +154,21 @@ resource "aws_security_group" "km_ecs_sg" {
 }
 
 resource "aws_lb" "km_lb" {
+  # oak9: LoadBalancerAttributes.Key.deletion_protection.enabled is not configured
+  # oak9: LoadBalancerAttributes.Key.deletion_protection.enabled should be set to any of True
   name            = "km-lb-${var.environment}"
   subnets         = aws_subnet.km_public_subnet.*.id
   security_groups = [aws_security_group.km_alb_sg.id]
 }
 
 resource "aws_lb_target_group" "km_lb_target" {
+  # oak9: aws_lb_target_group.health_check.protocol is not configured
+  # oak9: aws_lb_target_group.health_check.protocol should be set to any of HTTPS,TLS
+  # oak9: HealthCheckPort is not configured
+  # oak9: HealthCheckPort should be set to any of traffic-port
   name        = "km-lb-target-group-${var.environment}"
   port        = 80
-  protocol    = "HTTP"
+  protocol    = "HTTP" # oak9: protocol should be set to any of HTTPS,TLS
   vpc_id      = aws_vpc.km_vpc.id
   target_type = "ip"
   depends_on = [ aws_lb.km_lb ]
@@ -170,9 +176,10 @@ resource "aws_lb_target_group" "km_lb_target" {
 
 # Redirect all traffic from the ALB to the target group
 resource "aws_lb_listener" "km_frontend_listener" {
+  # oak9: aws_alb_listener.ssl_policy is not configured
   load_balancer_arn = aws_lb.km_lb.arn
   port              = "80"
-  protocol          = "HTTP"
+  protocol          = "HTTP" # oak9: protocol should be set to any of HTTPS,TLS
   default_action {
     target_group_arn = aws_lb_target_group.km_lb_target.arn
     type             = "forward"

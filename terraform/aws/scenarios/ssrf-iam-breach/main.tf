@@ -286,6 +286,13 @@ resource "aws_key_pair" "cg-ec2-key-pair" {
 }
 
 resource "aws_instance" "web-app-instance" {
+  # oak9: aws_instance.ebs_block_device.encrypted is not configured
+  # oak9: aws_instance.ebs_block_device.encrypted should be set to any of TRUE
+  # oak9: NetworkInterfaces.AssociatePublicIpAddress is not configured
+  # oak9: NetworkInterfaces.AssociatePublicIpAddress should be set to any of FALSE
+  # oak9: NetworkInterfaces.GroupSet is not configured
+  # oak9: SecurityGroupIds is not configured
+  # oak9: aws_ec2_client_vpn_network_association.security_groups is not configured
   ami                         = "ami-00ddb0e5626798373"
   associate_public_ip_address = "true"
 
@@ -325,7 +332,7 @@ resource "aws_instance" "web-app-instance" {
     volume_type           = "gp2"
   }
 
-  source_dest_check = "true"
+  source_dest_check = false
 
   tags = {
     Name = "web-app-instance"
@@ -363,6 +370,13 @@ resource "aws_instance" "web-app-instance" {
 }
 
 resource "aws_instance" "privileged-instance" {
+  # oak9: aws_instance.ebs_block_device.encrypted is not configured
+  # oak9: aws_instance.ebs_block_device.encrypted should be set to any of TRUE
+  # oak9: NetworkInterfaces.AssociatePublicIpAddress is not configured
+  # oak9: NetworkInterfaces.AssociatePublicIpAddress should be set to any of FALSE
+  # oak9: NetworkInterfaces.GroupSet is not configured
+  # oak9: SecurityGroupIds is not configured
+  # oak9: aws_ec2_client_vpn_network_association.security_groups is not configured
   ami                         = "ami-00ddb0e5626798373"
   associate_public_ip_address = "true"
 
@@ -397,7 +411,7 @@ resource "aws_instance" "privileged-instance" {
     volume_type           = "gp2"
   }
 
-  source_dest_check = "true"
+  source_dest_check = false
   subnet_id         = aws_subnet.subnet-2.id
 
   tags = {
